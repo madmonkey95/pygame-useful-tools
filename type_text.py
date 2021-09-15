@@ -12,6 +12,8 @@ class TextPrint:
         self.font = pygame.font.SysFont('Lucida Console', fontSize)
         self.fontColor = fontColor
         self.displayText = string
+        self.surf = pygame.Surface((0,0))
+        self.rect = self.surf.get_rect()
         self.active = False # is the text area currently in use - NOT USED 9/15/2021
         self.activeIndex = 0 # index that is being added to current render
         self.gameSurface = gameSurface # pass in the surface you want to draw on
@@ -20,6 +22,7 @@ class TextPrint:
         self.newLine = False # did text have to move to a new line?
         self.lastIndex = None # last index before moving to new line
         self.padding = padding # buffer so text doesn't run right to the edge of the screen
+        self.finished = False # flag for determing if the string has reached the end of its updates, useful if looping through a list and don't want object drawing at the same itme
     
 
     def newLinePrep(self):
@@ -49,7 +52,7 @@ class TextPrint:
                 self.newLineSurf = self.font.render(self.displayText[self.lastIndex:self.activeIndex], True, self.fontColor)
                 self.newLineRect = self.newLineSurf.get_rect(x=self.xpos,y=self.ypos + self.surf.get_height())
 
-            if self.activeIndex >= len(self.displayText): pass # stop advancing index when it reaches the end of string length
+            if self.activeIndex >= len(self.displayText): self.finished = True # stop advancing index when it reaches the end of string length
             else: self.activeIndex += 1
 
         self.timer += 1
